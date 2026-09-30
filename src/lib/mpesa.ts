@@ -2,8 +2,9 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-// Toggle between sandbox and production URLs based on the environment
-const isProduction = process.env.NODE_ENV === "production";
+// Toggle between sandbox and production URLs based on a specific MPESA environment variable
+// (Using NODE_ENV="production" automatically breaks sandbox credentials on Render.com)
+const isProduction = process.env.MPESA_ENVIRONMENT === "production";
 const mpesaBaseUrl = isProduction 
   ? "https://api.safaricom.co.ke" 
   : "https://sandbox.safaricom.co.ke";
@@ -24,7 +25,7 @@ function getMpesaCredentials() {
 /**
  * Generates an OAuth Access Token from the Safaricom Daraja API
  */
-export async function getMpesaToken(): Promise<string | null> {
+export async function getMpesaToken(): Promise<string> {
   const { mpesaConsumerKey, mpesaConsumerSecret } = getMpesaCredentials();
   const credentials = Buffer.from(`${mpesaConsumerKey}:${mpesaConsumerSecret}`).toString('base64');
   
@@ -38,15 +39,16 @@ export async function getMpesaToken(): Promise<string | null> {
     });
 
     if (!response.ok) {
-      console.error("M-Pesa Token Error:", await response.text());
-      return null;
+      const errorText = await response.text();
+      console.error("M-Pesa Token Error:", errorText);
+      throw new Error(`Safaricom Auth Failed: ${errorText}`);
     }
 
     const data = await response.json();
     return data.access_token;
-  } catch (error) {
+  } catch (error: any) {
     console.error("M-Pesa Token Error:", error);
-    return null;
+    throw new Error(error.message || "Failed to authenticate with Safaricom.");
   }
 }
 
