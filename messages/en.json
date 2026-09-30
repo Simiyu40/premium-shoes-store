@@ -1,0 +1,16 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "shop": "Shop",
+    "cart": "Cart"
+  },
+  "HomePage": {
+    "title": "Premium Footwear",
+    "subtitle": "Discover our collection of exclusive sneakers and boots."
+  },
+  "Checkout": {
+    "checkout": "Checkout with M-Pesa",
+    "phone": "Safaricom Phone Number",
+    "address": "Delivery Address"
+  }
+}

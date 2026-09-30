@@ -1,0 +1,16 @@
+{
+  "Navigation": {
+    "home": "Nyumbani",
+    "shop": "Duka",
+    "cart": "Kikapu"
+  },
+  "HomePage": {
+    "title": "Viatu vya Kifahari",
+    "subtitle": "Gundua mkusanyiko wetu wa raba na buti za kipekee."
+  },
+  "Checkout": {
+    "checkout": "Lipa na M-Pesa",
+    "phone": "Nambari ya Safaricom",
+    "address": "Anwani ya Uwasilishaji"
+  }
+}
