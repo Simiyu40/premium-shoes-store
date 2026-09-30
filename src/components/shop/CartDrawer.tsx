@@ -78,6 +78,7 @@ export function CartDrawer() {
               ))}
             </div>
           )}
+        </div>
         <div className="border-t px-6 pt-4 pb-[max(env(safe-area-inset-bottom),1.5rem)] mt-auto bg-background">
           <div className="flex justify-between font-medium text-xl mb-4">
             <span>Total</span>

@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "LUXE Premium Shoes",
     short_name: "LUXE.",
     description: "Discover our collection of exclusive sneakers and boots.",
-    start_url: "/",
+    start_url: "/en",
     display: "standalone",
     background_color: "#000000",
     theme_color: "#000000",
