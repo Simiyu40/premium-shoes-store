@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Link } from "@/i18n/routing";
 
 export function Hero() {
   const t = useTranslations("HomePage");
@@ -41,9 +42,11 @@ export function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <Button size="lg" className="bg-white text-black hover:bg-zinc-200 uppercase tracking-widest px-10 h-14 rounded-none">
-            Shop Collection
-          </Button>
+          <Link href="/shop">
+            <Button size="lg" className="bg-white text-black hover:bg-zinc-200 hover:text-black uppercase tracking-widest px-10 h-14 rounded-full">
+              Shop Collection
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>

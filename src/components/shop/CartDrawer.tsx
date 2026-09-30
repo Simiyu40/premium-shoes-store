@@ -39,12 +39,12 @@ export function CartDrawer() {
           </span>
         )}
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md flex flex-col h-[100dvh] border-l-0 shadow-2xl p-6">
-        <SheetHeader>
+      <SheetContent className="w-full sm:max-w-md flex flex-col h-[100dvh] border-l-0 shadow-2xl p-0">
+        <SheetHeader className="px-6 pt-6">
           <SheetTitle className="font-serif text-3xl uppercase tracking-wider">{t("cart")}</SheetTitle>
         </SheetHeader>
         
-        <div className="flex-1 overflow-y-auto py-6 pr-2 min-h-0 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-6 py-6 min-h-0 custom-scrollbar">
           {!mounted || items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-4">
               <ShoppingBag className="size-16 opacity-10" />
@@ -78,15 +78,13 @@ export function CartDrawer() {
               ))}
             </div>
           )}
-        </div>
-
-        <div className="border-t pt-6 pb-2">
-          <div className="flex justify-between font-medium text-xl mb-6">
+        <div className="border-t px-6 pt-4 pb-[max(env(safe-area-inset-bottom),1.5rem)] mt-auto bg-background">
+          <div className="flex justify-between font-medium text-xl mb-4">
             <span>Total</span>
             <span>KES {mounted ? total.toLocaleString() : 0}</span>
           </div>
           <Button 
-            className="w-full h-14 text-lg rounded-none uppercase tracking-widest"
+            className="w-full h-14 text-lg rounded-full uppercase tracking-widest bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary hover:border hover:border-primary transition-all duration-300"
             disabled={!mounted || items.length === 0}
             onClick={() => router.push("/checkout")}
           >
