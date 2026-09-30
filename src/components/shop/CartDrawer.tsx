@@ -85,7 +85,7 @@ export function CartDrawer() {
             <span>KES {mounted ? total.toLocaleString() : 0}</span>
           </div>
           <Button 
-            className="w-full h-14 text-lg rounded-full uppercase tracking-widest bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary hover:border hover:border-primary transition-all duration-300"
+            className="w-full h-14 text-sm font-bold rounded-full uppercase tracking-widest bg-primary text-primary-foreground hover:bg-foreground hover:text-background hover:scale-105 transition-all duration-300 shadow-lg"
             disabled={!mounted || items.length === 0}
             onClick={() => router.push("/checkout")}
           >

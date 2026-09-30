@@ -33,8 +33,8 @@ export function Navbar() {
                   Luxe.
                 </Link>
                 <nav className="flex flex-col gap-6">
-                  <Link href="/" onClick={() => setIsOpen(false)} className="text-2xl font-medium tracking-wide hover:text-primary/80 transition-colors">{t("home")}</Link>
-                  <Link href="/shop" onClick={() => setIsOpen(false)} className="text-2xl font-medium tracking-wide hover:text-primary/80 transition-colors">{t("shop")}</Link>
+                  <Link href="/" onClick={() => setIsOpen(false)} className="px-6 py-3 text-2xl font-bold rounded-full bg-transparent hover:bg-foreground hover:text-background transition-all duration-300 text-center">{t("home")}</Link>
+                  <Link href="/shop" onClick={() => setIsOpen(false)} className="px-6 py-3 text-2xl font-bold rounded-full bg-transparent hover:bg-foreground hover:text-background transition-all duration-300 text-center">{t("shop")}</Link>
                 </nav>
               </div>
               <div className="mt-auto pb-safe pb-8">
@@ -56,8 +56,8 @@ export function Navbar() {
         </div>
 
         <nav className="hidden md:flex gap-8 absolute left-1/2 -translate-x-1/2">
-          <Link href="/" className="text-sm font-medium hover:text-primary/80 transition-colors">{t("home")}</Link>
-          <Link href="/shop" className="text-sm font-medium hover:text-primary/80 transition-colors">{t("shop")}</Link>
+          <Link href="/" className="px-5 py-2 text-sm font-bold rounded-full bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 shadow-sm hover:shadow-md">{t("home")}</Link>
+          <Link href="/shop" className="px-5 py-2 text-sm font-bold rounded-full bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 shadow-sm hover:shadow-md">{t("shop")}</Link>
         </nav>
 
         <div className="flex items-center gap-2 md:gap-4">

@@ -84,8 +84,8 @@ export function CheckoutForm() {
         </div>
       </div>
 
-      <Button type="submit" disabled={loading || items.length === 0} className="w-full h-14 text-lg rounded-none uppercase tracking-widest mt-4">
-        {loading ? "Processing..." : t("checkout")}
+      <Button type="submit" disabled={loading || items.length === 0} className="w-full h-14 text-sm font-bold rounded-full uppercase tracking-widest mt-4 bg-primary text-primary-foreground hover:bg-green-600 hover:text-white hover:scale-105 transition-all duration-300 shadow-lg">
+        {loading ? "Processing..." : "CHECKOUT WITH M-PESA"}
       </Button>
       {message && (
         <p className={`text-sm mt-4 text-center p-3 border ${message.includes("success") ? "text-green-700 border-green-200 bg-green-50" : "text-destructive border-destructive/20 bg-destructive/10"}`}>
