@@ -19,6 +19,11 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Premium Footwear | Luxury Shoes",
   description: "Discover our collection of exclusive sneakers and boots.",
+  manifest: "/manifest.webmanifest",
+};
+
+export const viewport = {
+  themeColor: "#000000",
 };
 
 import { Toaster } from "@/components/ui/sonner";
