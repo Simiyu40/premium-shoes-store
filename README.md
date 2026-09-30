@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Luxe - Premium Shoes Store
 
-## Getting Started
+Luxe is a modern, high-performance e-commerce platform dedicated to premium footwear. Designed with a focus on an avant-garde aesthetic, smooth micro-interactions, and a seamless user experience, Luxe provides an exceptional shopping journey from browsing to checkout.
 
-First, run the development server:
+This project was built by:
+- **Hiram Simiyu** (COM/1004/23)
+- **Frankline Ombati** (COM/091/23)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Premium UI/UX:** An elegant, bespoke design using custom typography, glassmorphism, and fluid animations for an unforgettable shopping experience.
+- **Internationalization (i18n):** Multi-language support to cater to a diverse customer base.
+- **Dynamic Shopping Cart:** Fast, reliable state management for instant cart updates without page reloads.
+- **M-PESA Integration:** A seamless and secure checkout process powered by M-PESA.
+- **Progressive Web App (PWA):** Installable on devices with offline capabilities for a native-like experience.
+- **Dark/Light Mode:** Aesthetic consistency across both color schemes.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **UI Library:** [React 19](https://react.dev/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **State Management:** [Zustand](https://zustand-demo.pmnd.rs/)
+- **Database & Auth:** [Supabase](https://supabase.com/)
+- **Localization:** [next-intl](https://next-intl-docs.vercel.app/)
+- **PWA Integration:** [Serwist](https://serwist.build/)
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Make sure you have [Node.js](https://nodejs.org/) (v20+) and [pnpm](https://pnpm.io/) installed.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/premium-shoes-store.git
+   cd premium-shoes-store
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Set up environment variables:**
+   Create a `.env.local` file in the root directory and add your Supabase and M-PESA configuration keys:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   # Add M-PESA and other required keys
+   ```
+
+4. **Run the development server:**
+   ```bash
+   pnpm dev
+   ```
+
+5. **Open the app:**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📦 Scripts
+
+- `pnpm dev` - Starts the development server.
+- `pnpm build` - Builds the application for production.
+- `pnpm start` - Runs the built application.
+- `pnpm lint` - Runs ESLint to catch and fix issues.
+
+## 📄 License
+
+This project is licensed under the MIT License.
