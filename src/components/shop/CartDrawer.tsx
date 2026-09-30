@@ -39,12 +39,12 @@ export function CartDrawer() {
           </span>
         )}
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md flex flex-col border-l-0 shadow-2xl">
+      <SheetContent className="w-full sm:max-w-md flex flex-col h-[100dvh] border-l-0 shadow-2xl p-6">
         <SheetHeader>
-          <SheetTitle className="text-2xl uppercase tracking-wider">{t("cart")}</SheetTitle>
+          <SheetTitle className="font-serif text-3xl uppercase tracking-wider">{t("cart")}</SheetTitle>
         </SheetHeader>
         
-        <div className="flex-1 overflow-y-auto py-6 pr-2">
+        <div className="flex-1 overflow-y-auto py-6 pr-2 min-h-0 custom-scrollbar">
           {!mounted || items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-4">
               <ShoppingBag className="size-16 opacity-10" />
@@ -53,24 +53,25 @@ export function CartDrawer() {
           ) : (
             <div className="space-y-6">
               {items.map((item) => (
-                <div key={item.id} className="flex gap-4 items-center">
+                <div key={item.cartItemId} className="flex gap-4 items-center">
                   <div className="relative w-20 h-20 bg-muted rounded-md overflow-hidden shrink-0">
                     <Image src={item.images[0]} alt={item.name} fill className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium truncate text-sm">{item.name}</h4>
-                    <p className="text-xs text-muted-foreground mb-2">KES {item.price.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Size: {item.size}</p>
+                    <p className="text-xs font-semibold mb-2">KES {item.price.toLocaleString()}</p>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                      <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}>
                         <Minus className="size-3" />
                       </Button>
                       <span className="text-sm w-4 text-center">{item.quantity}</span>
-                      <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                      <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}>
                         <Plus className="size-3" />
                       </Button>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => removeItem(item.id)}>
+                  <Button variant="ghost" size="icon" className="text-destructive shrink-0 hover:bg-destructive/10" onClick={() => removeItem(item.cartItemId)}>
                     <Trash2 className="size-4" />
                   </Button>
                 </div>

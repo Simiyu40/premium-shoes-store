@@ -11,14 +11,16 @@ export interface Product {
 }
 
 export interface CartItem extends Product {
+  cartItemId: string; // unique string: `${id}-${size}`
+  size: string;
   quantity: number;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (product: Product, size: string) => void;
+  removeItem: (cartItemId: string) => void;
+  updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
   getItemCount: () => number;
@@ -28,30 +30,31 @@ export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (product) => {
+      addItem: (product, size) => {
         set((state) => {
-          const existingItem = state.items.find((item) => item.id === product.id);
+          const cartItemId = `${product.id}-${size}`;
+          const existingItem = state.items.find((item) => item.cartItemId === cartItemId);
           if (existingItem) {
             return {
               items: state.items.map((item) =>
-                item.id === product.id
+                item.cartItemId === cartItemId
                   ? { ...item, quantity: item.quantity + 1 }
                   : item
               ),
             };
           }
-          return { items: [...state.items, { ...product, quantity: 1 }] };
+          return { items: [...state.items, { ...product, cartItemId, size, quantity: 1 }] };
         });
       },
-      removeItem: (productId) => {
+      removeItem: (cartItemId) => {
         set((state) => ({
-          items: state.items.filter((item) => item.id !== productId),
+          items: state.items.filter((item) => item.cartItemId !== cartItemId),
         }));
       },
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (cartItemId, quantity) => {
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === productId ? { ...item, quantity: Math.max(1, quantity) } : item
+            item.cartItemId === cartItemId ? { ...item, quantity: Math.max(1, quantity) } : item
           ),
         }));
       },

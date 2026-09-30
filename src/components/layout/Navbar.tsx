@@ -16,7 +16,7 @@ export function Navbar() {
       className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md"
     >
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="text-2xl font-black tracking-widest uppercase">
+        <Link href="/" className="font-serif text-3xl font-black tracking-widest uppercase">
           Luxe.
         </Link>
         <nav className="hidden md:flex gap-8">

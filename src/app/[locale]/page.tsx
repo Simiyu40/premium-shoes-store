@@ -17,7 +17,7 @@ export default async function HomePage() {
         <section className="py-24 container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-wider mb-2">Featured Collection</h2>
+              <h2 className="font-serif text-3xl font-black uppercase tracking-wider mb-2">Featured Collection</h2>
               <p className="text-muted-foreground">The most exclusive releases of the season.</p>
             </div>
           </div>

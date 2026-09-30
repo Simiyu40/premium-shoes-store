@@ -7,15 +7,35 @@ import { ShoppingBag, Check } from "lucide-react";
 import Image from "next/image";
 import { useCart, Product } from "@/store/useCart";
 import { useState } from "react";
+import { toast } from "sonner";
+
+const SIZES = ["40", "41", "42", "43", "44"];
 
 export function ProductCard({ product }: { product: Product }) {
   const addItem = useCart((state) => state.addItem);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
 
   const handleAddToCart = () => {
-    addItem(product);
+    if (!selectedSize) {
+      toast.error("Please select a size first.", {
+        description: "A size is required to add this item to your cart.",
+      });
+      return;
+    }
+    
+    addItem(product, selectedSize);
     setAdded(true);
+    toast.success(`${product.name} added to cart`, {
+      description: `Size: ${selectedSize}`,
+      action: {
+        label: "View Cart",
+        onClick: () => document.querySelector<HTMLButtonElement>("[data-state]")?.click(), // simplistic way to open drawer if needed
+      },
+    });
+    
     setTimeout(() => setAdded(false), 2000);
+    setSelectedSize(null);
   };
 
   return (
@@ -32,13 +52,30 @@ export function ProductCard({ product }: { product: Product }) {
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>
-        <CardContent className="p-5">
+        <CardContent className="p-5 pb-3">
           <div className="flex flex-col gap-1">
             <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">{product.brand}</p>
-            <h3 className="font-medium text-lg leading-tight truncate">{product.name}</h3>
+            <h3 className="font-serif font-medium text-lg leading-tight truncate">{product.name}</h3>
             <p className="font-semibold text-primary mt-2">KES {product.price.toLocaleString()}</p>
           </div>
         </CardContent>
+        <div className="px-5 pb-4">
+          <div className="flex gap-2 justify-start">
+            {SIZES.map((size) => (
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`flex-1 h-8 text-xs font-medium border rounded transition-colors ${
+                  selectedSize === size
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
         <CardFooter className="p-5 pt-0">
           <Button 
             className={`w-full gap-2 transition-all ${added ? "bg-green-600 text-white hover:bg-green-700" : "group-hover:bg-primary group-hover:text-primary-foreground"}`} 

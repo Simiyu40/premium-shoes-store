@@ -1,17 +1,27 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Playfair_Display, Montserrat } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import "../globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const playfair = Playfair_Display({ 
+  subsets: ["latin"], 
+  variable: "--font-playfair" 
+});
+
+const montserrat = Montserrat({ 
+  subsets: ["latin"], 
+  variable: "--font-montserrat" 
+});
 
 export const metadata: Metadata = {
   title: "Premium Footwear | Luxury Shoes",
   description: "Discover our collection of exclusive sneakers and boots.",
 };
+
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function LocaleLayout({
   children,
@@ -30,10 +40,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased`}>
+      <body className={`${montserrat.variable} ${playfair.variable} font-sans min-h-screen bg-background text-foreground antialiased`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <Toaster position="bottom-right" theme="dark" />
       </body>
     </html>
   );
