@@ -62,11 +62,11 @@ export function InstallPrompt() {
     <Button
       variant="outline"
       size="sm"
-      className="hidden md:flex items-center gap-2 rounded-full font-bold"
+      className="flex items-center gap-2 rounded-full font-bold"
       onClick={handleInstallClick}
     >
       <Download className="h-4 w-4" />
-      <span>Install App</span>
+      <span className="hidden sm:inline">Install App</span>
     </Button>
   );
 }
