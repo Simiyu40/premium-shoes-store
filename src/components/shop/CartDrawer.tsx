@@ -33,6 +33,7 @@ export function CartDrawer() {
   return (
     <Sheet>
       <SheetTrigger 
+        id="cart-drawer-trigger"
         render={<Button variant="ghost" size="icon" className="relative" />}
       >
         <ShoppingBag className="size-5" />

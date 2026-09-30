@@ -30,7 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
       description: `Size: ${selectedSize}`,
       action: {
         label: "View Cart",
-        onClick: () => document.querySelector<HTMLButtonElement>("[data-state]")?.click(), // simplistic way to open drawer if needed
+        onClick: () => document.getElementById("cart-drawer-trigger")?.click(),
       },
     });
     
