@@ -23,11 +23,9 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
+            <SheetTrigger className="inline-flex items-center justify-center md:hidden p-2 rounded-full hover:bg-muted transition-colors">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Toggle navigation menu</span>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col h-full bg-background/95 backdrop-blur-xl border-r-0">
               <div className="flex flex-col mt-12 gap-8 flex-1">
