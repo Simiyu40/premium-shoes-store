@@ -2,26 +2,30 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-// Ensure environment variables are loaded for the Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-// We must use the service role key here to bypass RLS when updating the order status from the server
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!; 
-
-const mpesaConsumerKey = process.env.MPESA_CONSUMER_KEY!;
-const mpesaConsumerSecret = process.env.MPESA_CONSUMER_SECRET!;
-const mpesaPasskey = process.env.MPESA_PASSKEY!;
-const mpesaShortcode = process.env.MPESA_SHORTCODE!;
-
 // Toggle between sandbox and production URLs based on the environment
 const isProduction = process.env.NODE_ENV === "production";
 const mpesaBaseUrl = isProduction 
   ? "https://api.safaricom.co.ke" 
   : "https://sandbox.safaricom.co.ke";
 
+function getMpesaCredentials() {
+  const mpesaConsumerKey = process.env.MPESA_CONSUMER_KEY;
+  const mpesaConsumerSecret = process.env.MPESA_CONSUMER_SECRET;
+  const mpesaPasskey = process.env.MPESA_PASSKEY;
+  const mpesaShortcode = process.env.MPESA_SHORTCODE;
+
+  if (!mpesaConsumerKey || !mpesaConsumerSecret || !mpesaPasskey || !mpesaShortcode) {
+    throw new Error("Server configuration error: Missing M-Pesa credentials.");
+  }
+
+  return { mpesaConsumerKey, mpesaConsumerSecret, mpesaPasskey, mpesaShortcode };
+}
+
 /**
  * Generates an OAuth Access Token from the Safaricom Daraja API
  */
 export async function getMpesaToken(): Promise<string | null> {
+  const { mpesaConsumerKey, mpesaConsumerSecret } = getMpesaCredentials();
   const credentials = Buffer.from(`${mpesaConsumerKey}:${mpesaConsumerSecret}`).toString('base64');
   
   try {
@@ -53,6 +57,7 @@ export async function getMpesaToken(): Promise<string | null> {
  * @param orderId The UUID of the order in our Supabase database
  */
 export async function initiateSTKPush(phoneNumber: string, amount: number, orderId: string) {
+  const { mpesaShortcode, mpesaPasskey } = getMpesaCredentials();
   const token = await getMpesaToken();
   if (!token) throw new Error("Authentication with Safaricom failed");
 
@@ -63,6 +68,11 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
   const formattedPhone = phoneNumber.startsWith("0") 
     ? `254${phoneNumber.slice(1)}` 
     : phoneNumber.startsWith("+") ? phoneNumber.slice(1) : phoneNumber;
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://premium-shoes.vercel.app";
+  const callbackUrl = appUrl.includes("localhost") 
+    ? "https://premium-shoes.vercel.app/api/mpesa/callback" 
+    : `${appUrl}/api/mpesa/callback`;
 
   const payload = {
     BusinessShortCode: mpesaShortcode,
@@ -75,9 +85,7 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
     PhoneNumber: formattedPhone,
     // The endpoint in our app that Safaricom will hit once the user enters their PIN
     // Safaricom requires a public HTTPS URL. If we are on localhost, we pass a dummy URL so the STK prompt still works.
-    CallBackURL: process.env.NEXT_PUBLIC_APP_URL?.includes("localhost")
-      ? "https://premium-shoes.vercel.app/api/mpesa/callback"
-      : `${process.env.NEXT_PUBLIC_APP_URL}/api/mpesa/callback`,
+    CallBackURL: callbackUrl,
     AccountReference: "Premium Shoes", // This shows on the user's M-Pesa prompt
     TransactionDesc: `Payment for Order ${orderId.slice(0, 8)}`,
   };
@@ -97,6 +105,8 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
     if (data.ResponseCode === "0") {
       // The request was successfully accepted by Safaricom.
       // We must store the CheckoutRequestID to match it with the callback later.
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
       await supabase
         .from("orders")
