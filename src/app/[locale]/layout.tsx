@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
+import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 
 const playfair = Playfair_Display({ 
@@ -19,7 +20,6 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Premium Footwear | Luxury Shoes",
   description: "Discover our collection of exclusive sneakers and boots.",
-  manifest: "/manifest.webmanifest",
 };
 
 export const viewport = {
@@ -44,12 +44,18 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${montserrat.variable} ${playfair.variable} font-sans min-h-screen bg-background text-foreground antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
         </NextIntlClientProvider>
-        <Toaster position="bottom-right" theme="dark" />
+        <Toaster position="bottom-right" theme="system" />
       </body>
     </html>
   );

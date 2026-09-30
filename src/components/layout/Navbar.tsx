@@ -9,6 +9,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 export function Navbar() {
   const t = useTranslations("Navigation");
@@ -61,6 +63,8 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2 md:gap-4">
+          <InstallPrompt />
+          <ThemeToggle />
           <LanguageToggle />
           <CartDrawer />
         </div>
