@@ -107,13 +107,20 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
     if (data.ResponseCode === "0") {
       // The request was successfully accepted by Safaricom.
       // We must store the CheckoutRequestID to match it with the callback later.
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-      const supabase = createClient(supabaseUrl, supabaseServiceKey);
-      await supabase
-        .from("orders")
-        .update({ checkout_request_id: data.CheckoutRequestID })
-        .eq("id", orderId);
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        try {
+          const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY
+          );
+          await supabase
+            .from("orders")
+            .update({ checkout_request_id: data.CheckoutRequestID })
+            .eq("id", orderId);
+        } catch (dbErr) {
+          console.warn("Supabase update for checkout_request_id skipped:", dbErr);
+        }
+      }
 
       return { success: true, message: "STK Push sent successfully to your phone." };
     } else {

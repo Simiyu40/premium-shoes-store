@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
-  disable: false,
+  disable: process.env.NODE_ENV !== "production",
   reloadOnOnline: true,
 });
 
@@ -17,6 +17,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
       },
     ],
   },
