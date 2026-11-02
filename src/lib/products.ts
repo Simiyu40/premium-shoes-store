@@ -155,9 +155,10 @@ export async function getProducts(options?: GetProductsOptions): Promise<Product
         );
       }
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
     console.warn(
-      `[getProducts] Failed to fetch from Supabase (${err?.message || err}). Falling back to local catalogue.`
+      `[getProducts] Failed to fetch from Supabase (${msg}). Falling back to local catalogue.`
     );
   }
 

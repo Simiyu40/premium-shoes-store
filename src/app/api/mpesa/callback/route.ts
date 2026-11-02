@@ -26,11 +26,15 @@ export async function POST(req: Request) {
 
         if (resultCode === 0) {
           // Transaction was successful
-          const metadataItems = result.CallbackMetadata?.Item || [];
+          interface CallbackMetadataItem {
+            Name: string;
+            Value?: string | number;
+          }
+          const metadataItems: CallbackMetadataItem[] = result.CallbackMetadata?.Item || [];
           const mpesaReceiptItem = metadataItems.find(
-            (item: any) => item.Name === "MpesaReceiptNumber"
+            (item: CallbackMetadataItem) => item.Name === "MpesaReceiptNumber"
           );
-          const receiptNumber = mpesaReceiptItem?.Value || "SIMULATED_RECEIPT";
+          const receiptNumber = String(mpesaReceiptItem?.Value || "SIMULATED_RECEIPT");
 
           await supabase
             .from("orders")

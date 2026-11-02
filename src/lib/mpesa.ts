@@ -89,9 +89,10 @@ export async function getMpesaToken(): Promise<string> {
 
     const data = await response.json();
     return data.access_token;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[M-Pesa] Token Error:", error);
-    throw new Error(error.message || "Failed to authenticate with Safaricom.");
+    const msg = error instanceof Error ? error.message : "Failed to authenticate with Safaricom.";
+    throw new Error(msg);
   }
 }
 
@@ -187,11 +188,14 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
       console.error("[M-Pesa] STK Push Error:", errorMsg);
       return { success: false, message: errorMsg };
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[M-Pesa] Network or Processing Error:", error);
+    const msg = error instanceof Error 
+      ? error.message 
+      : "Failed to initiate M-Pesa STK Push. Please verify your phone number and try again.";
     return {
       success: false,
-      message: error?.message || "Failed to initiate M-Pesa STK Push. Please verify your phone number and try again.",
+      message: msg,
     };
   }
 }

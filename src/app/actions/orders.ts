@@ -44,8 +44,9 @@ export async function processCheckout(
         } else if (error) {
           console.warn("[processCheckout] Supabase order insertion warning:", error.message);
         }
-      } catch (dbErr: any) {
-        console.warn("[processCheckout] Database unreachable, proceeding with order reference:", dbErr?.message);
+      } catch (dbErr: unknown) {
+        const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+        console.warn("[processCheckout] Database unreachable, proceeding with order reference:", msg);
       }
     }
 
@@ -53,19 +54,21 @@ export async function processCheckout(
     try {
       const stkResponse = await initiateSTKPush(phone, totalAmount, orderId);
       return stkResponse;
-    } catch (mpesaErr: any) {
-      console.warn("[processCheckout] M-Pesa STK push error:", mpesaErr?.message);
+    } catch (mpesaErr: unknown) {
+      const msg = mpesaErr instanceof Error ? mpesaErr.message : String(mpesaErr);
+      console.warn("[processCheckout] M-Pesa STK push error:", msg);
       // If M-Pesa fails due to sandbox credentials or paused network, provide a graceful demo receipt
       return {
         success: true,
         message: `Order #${orderId.slice(0, 8).toUpperCase()} placed successfully for KES ${totalAmount.toLocaleString()}! (Simulated STK push sent to ${phone}).`,
       };
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Checkout error:", error);
+    const msg = error instanceof Error ? error.message : "An unexpected error occurred during checkout.";
     return { 
       success: false, 
-      message: error?.message || "An unexpected error occurred during checkout." 
+      message: msg 
     };
   }
 }
