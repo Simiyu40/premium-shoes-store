@@ -8,6 +8,9 @@ export interface Product {
   category: string;
   brand: string;
   images: string[];
+  description?: string;
+  in_stock?: boolean;
+  featured?: boolean;
 }
 
 export interface CartItem extends Product {

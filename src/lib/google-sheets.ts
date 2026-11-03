@@ -18,6 +18,18 @@ export interface UpdateOrderInput {
   mpesa_receipt_number?: string;
 }
 
+export interface OrderRecord {
+  id: string;
+  created_at: string;
+  total_amount: number;
+  status: string;
+  phone_number: string;
+  delivery_address: string;
+  items: string;
+  checkout_request_id?: string;
+  mpesa_receipt_number?: string;
+}
+
 function getGoogleSheetsConfig() {
   const apiUrl = process.env.GOOGLE_SHEETS_API_URL;
   const apiKey = process.env.GOOGLE_SHEETS_API_KEY || "";
@@ -170,3 +182,40 @@ export async function updateOrderInSheet(
   }
 }
 
+/**
+ * Retrieves an order from Google Sheets by order ID.
+ */
+export async function fetchOrderFromSheet(orderId: string): Promise<OrderRecord | null> {
+  const { apiUrl, apiKey } = getGoogleSheetsConfig();
+
+  if (!apiUrl || !orderId) {
+    return null;
+  }
+
+  try {
+    const url = new URL(apiUrl);
+    url.searchParams.set("action", "getOrder");
+    url.searchParams.set("id", orderId);
+    if (apiKey) url.searchParams.set("key", apiKey);
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+      cache: "no-store",
+      redirect: "follow",
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    if (data && data.success && data.order) {
+      return data.order as OrderRecord;
+    }
+    return null;
+  } catch (error) {
+    console.warn(`[Google Sheets DB] Error fetching order ${orderId}:`, error);
+    return null;
+  }
+}
