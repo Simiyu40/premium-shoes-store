@@ -3,12 +3,13 @@ import { getProducts } from "@/lib/products";
 import { ShopCatalogView } from "@/components/shop/ShopCatalogView";
 
 interface ShopPageProps {
-  searchParams?: Promise<{ category?: string }>;
+  searchParams?: Promise<{ category?: string; search?: string }>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const resolvedParams = searchParams ? await searchParams : {};
   const activeCategory = resolvedParams?.category || "All";
+  const initialSearch = resolvedParams?.search || "";
 
   // Fetch complete product catalogue
   const products = await getProducts();
@@ -34,6 +35,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         <ShopCatalogView 
           initialProducts={products} 
           initialCategory={activeCategory} 
+          initialSearch={initialSearch}
         />
       </main>
     </>

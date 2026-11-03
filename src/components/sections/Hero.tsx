@@ -6,20 +6,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { ArrowRight, Sparkles, ShieldCheck, Truck, Zap } from "lucide-react";
-
-const BRANDS_TICKER = [
-  "BALENCIAGA",
-  "SAINT LAURENT",
-  "BOTTEGA VENETA",
-  "RICK OWENS",
-  "AIR JORDAN",
-  "MAISON MARGIELA",
-  "SALOMON",
-  "PRADA",
-  "OFF-WHITE",
-  "GUCCI",
-  "NEW BALANCE",
-];
+import { BrandMarquee } from "@/components/sections/BrandMarquee";
 
 export function Hero() {
   const t = useTranslations("HomePage");
@@ -106,17 +93,8 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Animated Brand Ticker at Bottom */}
-      <div className="relative z-10 w-full border-t border-zinc-800 bg-zinc-950/80 backdrop-blur-md py-4 overflow-hidden">
-        <div className="flex gap-10 whitespace-nowrap animate-marquee text-[11px] font-bold tracking-[0.3em] uppercase text-zinc-400">
-          {[...BRANDS_TICKER, ...BRANDS_TICKER].map((brand, i) => (
-            <span key={i} className="flex items-center gap-10">
-              <span>{brand}</span>
-              <span className="text-zinc-600">•</span>
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Animated Brand Ticker with Bespoke Logos & Left-to-Right Motion */}
+      <BrandMarquee />
     </section>
   );
 }

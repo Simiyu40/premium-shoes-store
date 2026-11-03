@@ -12,14 +12,16 @@ const CATEGORIES = ["All", "Designer", "Sneakers", "Boots", "Running", "Lifestyl
 interface ShopCatalogViewProps {
   initialProducts: Product[];
   initialCategory?: string;
+  initialSearch?: string;
 }
 
 export function ShopCatalogView({
   initialProducts,
   initialCategory = "All",
+  initialSearch = "",
 }: ShopCatalogViewProps) {
   const [activeCategory, setActiveCategory] = useState(initialCategory);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState("featured");
 
   const filteredProducts = useMemo(() => {

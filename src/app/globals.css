@@ -146,4 +146,41 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
   }
+
+  .animate-marquee-ltr {
+    display: flex;
+    width: max-content;
+    animation: marquee-ltr 40s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee-rtl {
+    display: flex;
+    width: max-content;
+    animation: marquee-rtl 40s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee-ltr:hover,
+  .animate-marquee-rtl:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes marquee-ltr {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+@keyframes marquee-rtl {
+  0% {
+    transform: translate3d(0%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
