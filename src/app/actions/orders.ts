@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
+import { insertOrderToSheet } from "@/lib/google-sheets";
 import { initiateSTKPush } from "@/lib/mpesa";
 
 export async function processCheckout(
@@ -18,36 +18,21 @@ export async function processCheckout(
     }
 
     const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const fallbackOrderId = `ord-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    let orderId = fallbackOrderId;
+    const orderId = `ord-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
-    // Attempt to persist order to Supabase if configured and reachable
-    if (supabaseUrl && supabaseServiceKey) {
-      try {
-        const supabase = createClient(supabaseUrl, supabaseServiceKey);
-        const { data: order, error } = await supabase
-          .from("orders")
-          .insert({
-            total_amount: totalAmount,
-            status: "PENDING",
-            delivery_address: address,
-            phone_number: phone,
-          })
-          .select()
-          .single();
-
-        if (!error && order?.id) {
-          orderId = order.id;
-        } else if (error) {
-          console.warn("[processCheckout] Supabase order insertion warning:", error.message);
-        }
-      } catch (dbErr: unknown) {
-        const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
-        console.warn("[processCheckout] Database unreachable, proceeding with order reference:", msg);
-      }
+    // Attempt to persist order to Google Sheets
+    try {
+      await insertOrderToSheet({
+        id: orderId,
+        total_amount: totalAmount,
+        status: "PENDING",
+        delivery_address: address,
+        phone_number: phone,
+        items: items,
+      });
+    } catch (dbErr: unknown) {
+      const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+      console.warn("[processCheckout] Database unreachable, proceeding with order reference:", msg);
     }
 
     // Attempt M-Pesa STK Push
@@ -57,7 +42,7 @@ export async function processCheckout(
     } catch (mpesaErr: unknown) {
       const msg = mpesaErr instanceof Error ? mpesaErr.message : String(mpesaErr);
       console.warn("[processCheckout] M-Pesa STK push error:", msg);
-      // If M-Pesa fails due to sandbox credentials or paused network, provide a graceful demo receipt
+      // If M-Pesa fails due to sandbox credentials or network, provide a graceful demo receipt
       return {
         success: true,
         message: `Order #${orderId.slice(0, 8).toUpperCase()} placed successfully for KES ${totalAmount.toLocaleString()}! (Simulated STK push sent to ${phone}).`,

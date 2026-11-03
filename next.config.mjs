@@ -1,3 +1,5 @@
+process.env.SERWIST_SUPPRESS_TURBOPACK_WARNING = "1";
+
 import createNextIntlPlugin from 'next-intl/plugin';
 import withSerwistInit from "@serwist/next";
 
@@ -20,7 +22,27 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "*.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "drive.google.com",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+      },
+      {
+        protocol: "https",
         hostname: "*.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },

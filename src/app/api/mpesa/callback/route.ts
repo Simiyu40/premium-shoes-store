@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { updateOrderInSheet } from "@/lib/google-sheets";
 
 /**
  * Safaricom hits this endpoint after the user completes or cancels the STK prompt.
@@ -17,13 +17,8 @@ export async function POST(req: Request) {
     const checkoutRequestId = result.CheckoutRequestID;
     const resultCode = result.ResultCode; // 0 means success
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (supabaseUrl && supabaseServiceKey && checkoutRequestId) {
+    if (checkoutRequestId) {
       try {
-        const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
         if (resultCode === 0) {
           // Transaction was successful
           interface CallbackMetadataItem {
@@ -36,23 +31,23 @@ export async function POST(req: Request) {
           );
           const receiptNumber = String(mpesaReceiptItem?.Value || "SIMULATED_RECEIPT");
 
-          await supabase
-            .from("orders")
-            .update({ 
-              status: "PAID", 
-              mpesa_receipt_number: receiptNumber 
-            })
-            .eq("checkout_request_id", checkoutRequestId);
+          await updateOrderInSheet(
+            { checkoutRequestId },
+            {
+              status: "PAID",
+              mpesa_receipt_number: receiptNumber,
+            }
+          );
 
-          console.log(`[M-Pesa Webhook] Order marked PAID. Receipt: ${receiptNumber}`);
+          console.log(`[M-Pesa Webhook] Order marked PAID in Google Sheets. Receipt: ${receiptNumber}`);
         } else {
           // Transaction failed or cancelled by user
-          await supabase
-            .from("orders")
-            .update({ status: "FAILED" })
-            .eq("checkout_request_id", checkoutRequestId);
+          await updateOrderInSheet(
+            { checkoutRequestId },
+            { status: "FAILED" }
+          );
 
-          console.log(`[M-Pesa Webhook] Order marked FAILED: ${result.ResultDesc}`);
+          console.log(`[M-Pesa Webhook] Order marked FAILED in Google Sheets: ${result.ResultDesc}`);
         }
       } catch (dbErr) {
         console.warn("[M-Pesa Webhook] Database update error:", dbErr);

@@ -1,5 +1,5 @@
 import { Product } from "@/store/useCart";
-import { createClient } from "@/lib/supabase/server";
+import { fetchProductsFromSheet } from "@/lib/google-sheets";
 
 export const FALLBACK_PRODUCTS: Product[] = [
   {
@@ -109,57 +109,22 @@ interface GetProductsOptions {
 }
 
 /**
- * Resilient product fetcher.
- * 1. Tries Supabase database first if environment variables are available.
- * 2. If Supabase is paused, fails with an error, or has 0 products, falls back to the curated catalogue.
- * This guarantees the store ALWAYS renders products end to end.
+ * Resilient product fetcher:
+ * 1. Queries the Google Sheets database via the Apps Script Web App.
+ * 2. If Google Sheets is not configured or fails, falls back gracefully to the curated catalogue.
+ * This guarantees the storefront ALWAYS renders products end-to-end.
  */
 export async function getProducts(options?: GetProductsOptions): Promise<Product[]> {
   const { limit, category } = options || {};
 
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (supabaseUrl && supabaseKey) {
-      const supabase = await createClient();
-      let query = supabase.from("products").select("*");
-
-      if (category && category.toLowerCase() !== "all") {
-        query = query.ilike("category", category);
-      }
-
-      if (limit) {
-        query = query.limit(limit);
-      }
-
-      const { data, error } = await query;
-
-      if (!error && Array.isArray(data) && data.length > 0) {
-        // Sanitize data to ensure image arrays exist
-        return data.map((item) => ({
-          id: String(item.id),
-          name: item.name || "Footwear",
-          brand: item.brand || "Luxe",
-          category: item.category || "Sneakers",
-          price: Number(item.price) || 0,
-          images: Array.isArray(item.images) && item.images.length > 0
-            ? item.images
-            : ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop"],
-        }));
-      }
-
-      if (error) {
-        console.warn(
-          `[getProducts] Supabase returned error (${error.message}). Using fallback catalogue.`
-        );
-      }
+    const sheetProducts = await fetchProductsFromSheet(category);
+    if (sheetProducts && sheetProducts.length > 0) {
+      return limit ? sheetProducts.slice(0, limit) : sheetProducts;
     }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.warn(
-      `[getProducts] Failed to fetch from Supabase (${msg}). Falling back to local catalogue.`
-    );
+    console.warn(`[getProducts] Failed to fetch from Google Sheets (${msg}). Falling back to local catalogue.`);
   }
 
   // Graceful fallback: return local curated catalogue

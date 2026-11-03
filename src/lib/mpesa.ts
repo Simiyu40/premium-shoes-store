@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
+import { updateOrderInSheet } from "@/lib/google-sheets";
 
 // Sandbox credentials for Daraja test PayBill (Shortcode: 174379)
 const DEFAULT_MPESA_CONSUMER_KEY = "Hkm0Q8tU43mY7yM91XwyRGL5dAwZO1WxQUcfEDOppq855Mab";
@@ -121,11 +121,12 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
       };
     }
 
-    // Determine public callback URL
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://premium-shoes.vercel.app";
-    const callbackUrl = appUrl.includes("localhost")
+    // Determine public callback URL (handles custom domain or Vercel preview/production URLs)
+    const rawAppUrl = process.env.NEXT_PUBLIC_APP_URL 
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://premium-shoes.vercel.app");
+    const callbackUrl = rawAppUrl.includes("localhost")
       ? "https://premium-shoes.vercel.app/api/mpesa/callback"
-      : `${appUrl.replace(/\/$/, "")}/api/mpesa/callback`;
+      : `${rawAppUrl.replace(/\/$/, "")}/api/mpesa/callback`;
 
     // Safaricom parameter constraints:
     // - AccountReference: Alphanumeric, max 12 characters, no spaces
@@ -163,19 +164,13 @@ export async function initiateSTKPush(phoneNumber: string, amount: number, order
 
     if (data.ResponseCode === "0") {
       // Safaricom accepted the request and prompted the user's handset
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-        try {
-          const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.SUPABASE_SERVICE_ROLE_KEY
-          );
-          await supabase
-            .from("orders")
-            .update({ checkout_request_id: data.CheckoutRequestID })
-            .eq("id", orderId);
-        } catch (dbErr) {
-          console.warn("[M-Pesa] Supabase order tracking skipped:", dbErr);
-        }
+      try {
+        await updateOrderInSheet(
+          { id: orderId },
+          { checkout_request_id: data.CheckoutRequestID }
+        );
+      } catch (dbErr) {
+        console.warn("[M-Pesa] Google Sheets order tracking skipped:", dbErr);
       }
 
       return {

@@ -7,7 +7,6 @@ import { CartDrawer } from "@/components/shop/CartDrawer";
 import { motion } from "framer-motion";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
