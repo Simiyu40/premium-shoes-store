@@ -80,9 +80,12 @@ export function Hero() {
             </Button>
           </Link>
           <Link href="/shop?category=Designer">
-            <Button size="lg" variant="outline" className="border-zinc-700 text-white hover:bg-zinc-900 uppercase tracking-widest text-xs font-bold px-8 h-14 rounded-full w-full sm:w-auto">
+            <button 
+              type="button"
+              className="border border-zinc-700/80 bg-zinc-900/80 hover:bg-zinc-800 text-white uppercase tracking-widest text-xs font-bold px-8 h-14 rounded-full w-full sm:w-auto transition-all backdrop-blur-md shadow-lg flex items-center justify-center cursor-pointer"
+            >
               Luxury Designers
-            </Button>
+            </button>
           </Link>
         </motion.div>
 

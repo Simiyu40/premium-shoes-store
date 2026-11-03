@@ -29,6 +29,7 @@ export function ProductDetailModal({
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const images = product.images && product.images.length > 0 
     ? product.images 
@@ -64,16 +65,23 @@ export function ProductDetailModal({
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Left Column: Image Gallery */}
+          {/* Left Column: Image Gallery with Shimmer Loader */}
           <div className="bg-zinc-100 dark:bg-zinc-900/60 p-6 flex flex-col justify-between">
-            <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-background/50 shadow-inner">
+            <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-muted/40 shadow-inner">
+              {!imageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/50 animate-pulse">
+                  <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin opacity-40" />
+                </div>
+              )}
               <Image
                 src={images[selectedImage] || images[0]}
                 alt={product.name}
                 fill
+                unoptimized
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover transition-all duration-500"
+                className={`object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
                 priority
+                onLoad={() => setImageLoaded(true)}
               />
             </div>
 
@@ -83,14 +91,25 @@ export function ProductDetailModal({
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => setSelectedImage(idx)}
-                    className={`relative size-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
+                    onClick={() => {
+                      if (selectedImage !== idx) {
+                        setImageLoaded(false);
+                        setSelectedImage(idx);
+                      }
+                    }}
+                    className={`relative size-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
                       selectedImage === idx
                         ? "border-primary scale-105 shadow-md"
                         : "border-transparent opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <Image src={img} alt={`${product.name} angle ${idx + 1}`} fill className="object-cover" />
+                    <Image 
+                      src={img} 
+                      alt={`${product.name} angle ${idx + 1}`} 
+                      fill 
+                      unoptimized
+                      className="object-cover" 
+                    />
                   </button>
                 ))}
               </div>
@@ -135,7 +154,7 @@ export function ProductDetailModal({
                       key={size}
                       type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`h-10 text-xs font-semibold rounded-lg border transition-all ${
+                      className={`h-10 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
                         selectedSize === size
                           ? "border-primary bg-primary text-primary-foreground shadow-sm scale-105"
                           : "border-border hover:border-primary/60 bg-muted/30"
@@ -192,4 +211,3 @@ export function ProductDetailModal({
     </Dialog>
   );
 }
-

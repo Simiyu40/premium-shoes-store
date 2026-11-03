@@ -126,6 +126,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* Interactive Modal */}
       <ProductDetailModal 
+        key={product.id}
         product={product} 
         open={modalOpen} 
         onOpenChange={setModalOpen} 
